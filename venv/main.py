@@ -49,12 +49,21 @@ def r_sub_menu():
 def i_test_menu():
     kb = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="Item1", callback_data="itm1")],
-            [InlineKeyboardButton(text="Item2", callback_data="itm2")],
-            [InlineKeyboardButton(text="Item3", callback_data="itm3")]
+            [InlineKeyboardButton(text="itm1", callback_data="itm1")],
+            [InlineKeyboardButton(text="itm2", callback_data="itm2")],
+            [InlineKeyboardButton(text="Show Sub Menu", callback_data="sub_menu")]
         ]
     )
     return kb
+
+@dp.callback_query(lambda c: c.data)
+async def process_callback(callback_query: types.CallbackQuery):
+    data = callback_query.data
+    chat_id = callback_query.from_user.id
+    if data == "itm1":
+        await bot.send_message(chat_id, "It's working!!")
+    elif data == "sub_menu":
+        await bot.send_message(chat_id, "This is submenu!", reply_markup=r_sub_menu())
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
