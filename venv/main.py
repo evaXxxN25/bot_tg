@@ -9,7 +9,8 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.types.reply_keyboard_markup import ReplyKeyboardMarkup
 from aiogram.types.keyboard_button import KeyboardButton
-from aiogram.utils.markdown import hbold
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = "6403293465:AAEk8q5PZNzhwKh4FwPhfMoKMjVqm_GuDt8"
@@ -25,7 +26,7 @@ def r_main_menu():
     kb = ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="Про нас🤭")],
-            [KeyboardButton(text="Під-меню"), KeyboardButton(text="Інлайн меню")]
+            [KeyboardButton(text="Під-меню"), KeyboardButton(text="Inline Menu")]
         ],
         resize_keyboard=True
     )
@@ -44,6 +45,16 @@ def r_sub_menu():
     )
     return kb
 
+# --- INLINE ---
+def i_test_menu():
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Item1", callback_data="itm1")],
+            [InlineKeyboardButton(text="Item2", callback_data="itm2")],
+            [InlineKeyboardButton(text="Item3", callback_data="itm3")]
+        ]
+    )
+    return kb
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -60,9 +71,10 @@ async def reply_kb_handler(message: types.Message) -> None:
         await message.answer(text)
     elif msg == "Під-меню":
         await message.answer("Ви перейшли в під меню!", reply_markup= r_sub_menu() )
-    elif msg == "Інлайн меню":
-        await message.answer("Ви перейшли в інлайн меню!")
-
+    elif msg == "Назад":
+        await message.answer("Ви повернулись назад!", reply_markup=r_main_menu())
+    elif msg == "Inline Menu":
+        await message.answer("Це приклад повідомлення з інлайн меню", reply_markup=i_test_menu())
 
 async def main() -> None:
     # And the run events dispatching
